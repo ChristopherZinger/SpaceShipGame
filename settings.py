@@ -4,9 +4,10 @@ import pygame, sys
 
 
 # Display settings
-FPS = 30
-display_proportions = (300,700)
-DISPLAYSURF = pygame.display.set_mode(display_proportions)
+FPS = 60
+window_size = (500,700)
+game_area = (300,700)
+DISPLAYSURF = pygame.display.set_mode(window_size)
 
 #Colors
 colors = {
@@ -17,3 +18,12 @@ colors = {
     'black': (0,0,0),
     'light-green': (0, 255, 119),
 }
+
+# grid
+meteor_x = 10
+meteor_y = 10
+
+grid_x = 30
+grid_y = 100
+
+meteors_in_row = int(game_area[0]/(grid_x+meteor_x))

@@ -1,0 +1,10 @@
+
+
+
+Add spaceship bitmap
+Crete background
+Animation for collision of bullet and meteor
+Handle Collision of spaceship and meteors
+Why the first meteor is not destructable
+add special bullets
+Items that improve your amunition and health

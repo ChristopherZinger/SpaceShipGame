@@ -1,11 +1,12 @@
 import pygame, sys
 from settings import *
 from meteors import meteors
+from playerstats import player_stats
 
 class SpaceCraft(object):
-    def __init__(self,display_proportions, color):
+    def __init__(self,game_area, color):
         self.x = 150
-        self.y = display_proportions[1] - 20
+        self.y = game_area[1] - 20
         self.wy = 8
         self.wx = 8
         self.color = color
@@ -26,13 +27,13 @@ class SpaceCraft(object):
             self.vector[0] += .5 if self.vector[0] < 0  else -.5
 
     def move(self):
-        area_limit = [0, display_proportions[0]-self.wx]
+        area_limit = [0, game_area[0]-self.wx]
         if self.x > area_limit[0] and self.x < area_limit[1]:
             self.x += self.vector[0]
             self.y += self.vector[1]
         else:
             x = self.vector[0]
-            self.vector[0] = abs(self.vector[0]) if self.vector[0] > 0 else self.vector[0]*(-1)
+            self.vector[0] = self.vector[0]*(-1) if self.vector[0] > 0 else abs(self.vector[0])
             self.x = 1 if self.x <1 else area_limit[1]-1
 
     def draw(self):
@@ -44,7 +45,9 @@ class SpaceCraft(object):
         )
 
     def shot(self):
-        lunched_shots.push(CraftShot(self.x, self.y))
+        if player_stats.get('amunition') > 0:
+            player_stats.set(-1, 'amunition')
+            lunched_shots.push(CraftShot(self.x, self.y))
 
 
 class CraftShot(object):
@@ -83,6 +86,6 @@ class LunchedShots():
                 i.draw()
 
 
-craft = SpaceCraft(display_proportions, colors['light-green'])
+craft = SpaceCraft(game_area, colors['light-green'])
 global lunched_shots
 lunched_shots = LunchedShots()
