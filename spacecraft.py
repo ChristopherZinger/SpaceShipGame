@@ -1,13 +1,15 @@
 import pygame, sys
 from settings import *
 from playerstats import player_stats
+from base_obj import BaseObj
 
-class SpaceCraft(object):
+
+class SpaceCraft(BaseObj):
     def __init__(self,game_area, color):
-        self.x = 150
-        self.y = game_area[1] - 70
-        self.wy = 25
-        self.wx = 25
+        super().__init__(
+            x=150, y=game_area[1] - 70,
+            wx=25, wy=25
+        )
         self.vector = [0,0]
         self.display_surface = DISPLAYSURF
         self.image = pygame.image.load('spaceship.bmp')
@@ -40,20 +42,19 @@ class SpaceCraft(object):
         DISPLAYSURF.blit(self.image, (self.x, self.y))
 
     def shot(self,type):
+        if player_stats.get('amunition') <= 0: return
         if type == 'normal':
-            if player_stats.get('amunition') > 0:
                 player_stats.set(-1, 'amunition')
                 lunched_shots.push(CraftShot(self.x+int(self.wx/2), self.y))
         if type == 'double':
+                player_stats.set(-2, 'amunition')
                 lunched_shots.push(CraftShot(self.x, self.y))
                 lunched_shots.push(CraftShot(self.x+self.wx-2, self.y))
 
-class CraftShot(object):
+
+class CraftShot(BaseObj):
     def __init__(self, x, y, type='normal'):
-        self.x = x
-        self.y = y
-        self.wx = 2
-        self.wy = 2
+        super().__init__(x=x, y=y, wx=2, wy=2)
         self.color = (255,255,255,0)
         self.display_surface = DISPLAYSURF
         self.shot_type = type
@@ -69,7 +70,6 @@ class CraftShot(object):
         self.y -= 5
         if self.y < 0:
             lunched_shots.remove_item(self)
-
 
 
 class LunchedShots():
@@ -89,6 +89,6 @@ class LunchedShots():
                 i.draw()
 
 
-craft = SpaceCraft(game_area, colors['light-green'])
 global lunched_shots
+craft = SpaceCraft(game_area, colors['light-green'])
 lunched_shots = LunchedShots()

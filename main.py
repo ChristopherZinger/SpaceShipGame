@@ -5,6 +5,7 @@ from meteors import meteors, add_meteor_row
 from spacecraft import craft, lunched_shots
 from playerstats import player_stats
 
+print('hello')
 
 pygame.init()
 # pygame.font.init()
@@ -18,7 +19,6 @@ add_meteor_row()
 
 #Main Loop
 while True:
-
     DISPLAYSURF.fill(colors['black'])
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -49,11 +49,10 @@ while True:
 
     # add new row of metheors
     try:
-        if meteors.root_node.meteor.y > grid_y:
+        if meteors.meteors_list[-1].y > grid_y:
             add_meteor_row()
-    except Exception as e:
-        print('Error. main.py')
-        print(e)
+    except:
+        print(meteors.meteors_list[-1].y)
 
     #draw geometries
     meteors.traverse(call_function='draw',)

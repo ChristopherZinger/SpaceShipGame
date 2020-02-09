@@ -1,10 +1,6 @@
 import pygame, sys
 from settings import *
 pygame.font.init()
-print(
-    pygame.font.get_init(),
-    pygame.font.get_default_font(),
-    )
 
 
 class PlayerStats(object):

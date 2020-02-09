@@ -8,14 +8,12 @@ import pygame, sys
 from settings import *
 from colisions import detect_colision
 from playerstats import player_stats
+from base_obj import BaseObj
 
 
-class Meteor(object):
-    def __init__(self, x=grid_x, y=0, wx=meteor_x, wy=meteor_y, color=(255,255,255)):
-        self.x = x
-        self.y = y
-        self.wy = wy
-        self.wx = wx
+class Meteor(BaseObj):
+    def __init__(self, x=grid_x, y=0, wx=meteor_x, wy=meteor_y,  color=(255,255,255)):
+        super().__init__(x=x, y=y, wx=wx, wy=wy)
         self.color = color
         self.display_surface = DISPLAYSURF
 
@@ -27,7 +25,7 @@ class Meteor(object):
         # check if meteor left the game space
         # if yes remove object and decrease palyer points
 
-    def draw(self):
+    def draw(self, **kwargs):
         pygame.draw.rect(
             self.display_surface,
             self.color,
@@ -41,36 +39,25 @@ class Meteor(object):
                 player_stats.set(1, 'points')
                 #remove bullet from lunched_shots
                 kwargs['colision_items'].remove_item(i)
-                # find meteors node and remove it all together.
-                '''
-                # TODO:
-                following code should be integrated into meteors.traverse()
-                '''
-                node = meteors.root_node
-                if self == node.meteor:
-                    meteors.remove_item(node)
-                    return
-                while node.next_node != None:
-                    node = node.next_node
-                    if self == node.meteor:
-                        meteors.remove_item(node)
-                        break
-
+                # remove meteor form list and delete object
+                meteors.remove_item(self)
+                del self
+                break
 
 
 class Meteors(object):
     def __init__(self):
         self.meteors_list = []
 
-    def append(self, meteor):
+    def add_to_end(self, meteor):
         # if meteor.__class__.__name__ == 'Meteor':
         self.meteors_list.append(meteor)
 
     def traverse(self, **kwargs):
         if 'call_function' in kwargs:
-            for i in self.meteors_list:
+            for meteor in self.meteors_list:
                     getattr(
-                        self.meteors_list[i],
+                        meteor,
                         kwargs['call_function']
                     )(**kwargs)
 
@@ -82,14 +69,13 @@ def add_meteor_row():
     # add first in the row
     add_meteor(x=grid_x, y=0)
     # add rest meteors
-    root_meteor_x = meteors.meteors_list[0].x
+    root_meteor_x = meteors.meteors_list[-1].x
     while root_meteor_x + meteor_x + grid_x <= game_area[0]:
         add_meteor(x=root_meteor_x + meteor_x + grid_x, y=0)
-        root_meteor_x = meteors.meteors_list[0].meteor.x
-
+        root_meteor_x = meteors.meteors_list[-1].x
 
 def add_meteor(x,y):
-        meteors.append(
+        meteors.add_to_end(
             Meteor(
                 x=x
             )
