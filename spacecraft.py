@@ -1,17 +1,16 @@
 import pygame, sys
 from settings import *
-from meteors import meteors
 from playerstats import player_stats
 
 class SpaceCraft(object):
     def __init__(self,game_area, color):
         self.x = 150
-        self.y = game_area[1] - 20
-        self.wy = 8
-        self.wx = 8
-        self.color = color
+        self.y = game_area[1] - 70
+        self.wy = 25
+        self.wx = 25
         self.vector = [0,0]
         self.display_surface = DISPLAYSURF
+        self.image = pygame.image.load('spaceship.bmp')
 
     def handle_arrows(self, direction=None):
         # accelerate ship movement and detect if ship
@@ -38,35 +37,39 @@ class SpaceCraft(object):
 
     def draw(self):
         self.move()
-        pygame.draw.rect(
-            self.display_surface,
-            self.color,
-            (self.x, self.y, self.wx, self.wy)
-        )
+        DISPLAYSURF.blit(self.image, (self.x, self.y))
 
-    def shot(self):
-        if player_stats.get('amunition') > 0:
-            player_stats.set(-1, 'amunition')
-            lunched_shots.push(CraftShot(self.x, self.y))
-
+    def shot(self,type):
+        if type == 'normal':
+            if player_stats.get('amunition') > 0:
+                player_stats.set(-1, 'amunition')
+                lunched_shots.push(CraftShot(self.x+int(self.wx/2), self.y))
+        if type == 'double':
+                lunched_shots.push(CraftShot(self.x, self.y))
+                lunched_shots.push(CraftShot(self.x+self.wx-2, self.y))
 
 class CraftShot(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, type='normal'):
         self.x = x
         self.y = y
         self.wx = 2
         self.wy = 2
-        self.color = colors['light-green']
+        self.color = (255,255,255,0)
         self.display_surface = DISPLAYSURF
+        self.shot_type = type
 
     def draw(self):
-        pygame.draw.rect(
-            self.display_surface,self.color,
-            (self.x, self.y, self.wx, self.wy)
-        )
+        #draw a bullet that looks like a short gradient
+        for i in range(10):
+            color = (0, (255-(i*25)), (255-(i*25)))
+            pygame.draw.rect(
+                self.display_surface, color,
+                (self.x, self.y+(i*2), self.wx, self.wy)
+            )
         self.y -= 5
         if self.y < 0:
             lunched_shots.remove_item(self)
+
 
 
 class LunchedShots():

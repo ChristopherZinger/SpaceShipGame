@@ -1,16 +1,16 @@
-import pygame, sys
+import pygame, sys, os
 
-
-
-
+BASE_DIR =  os.path.dirname(os.path.realpath(__file__))
+print(BASE_DIR)
 # Display settings
-FPS = 60
+FPS = 40
 window_size = (500,700)
 game_area = (300,700)
 DISPLAYSURF = pygame.display.set_mode(window_size)
-
+DISPLAYSURFALPHA = DISPLAYSURF.convert_alpha()
 #Colors
 colors = {
+    'cian': (0,255,255),
     'white': (255,255,255),
     'red': (255,0,0),
     'blue': (0,0,255),

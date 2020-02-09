@@ -30,8 +30,11 @@ while True:
         if event.type == KEYUP:
             # handle shoot
             if event.key == pygame.K_f:
-                craft.shot()
-
+                craft.shot('normal')
+        if event.type == KEYUP:
+            # handle shoot
+            if event.key == pygame.K_SPACE:
+                craft.shot('double')
 
     # handle key down
     pressed = pygame.key.get_pressed()
@@ -45,19 +48,23 @@ while True:
         craft.handle_arrows()
 
     # add new row of metheors
-    if meteors.get_root().meteor.y > grid_y:
-        add_meteor_row()
+    try:
+        if meteors.root_node.meteor.y > grid_y:
+            add_meteor_row()
+    except Exception as e:
+        print('Error. main.py')
+        print(e)
 
     #draw geometries
-    meteors.draw_meteors()
+    meteors.traverse(call_function='draw',)
     lunched_shots.draw()
     craft.draw()
 
     # update position of geometries
-    meteors.traverse( None, call_function='move', vector=[0,.5])
+    meteors.traverse(call_function='move', vector=[0,.5])
 
     # handle collisions
-    meteors.traverse(None, call_function='colision', colision_items=lunched_shots)
+    meteors.traverse(call_function='colision', colision_items=lunched_shots)
 
     #draw text
     player_stats.draw()
