@@ -1,0 +1,9 @@
+
+
+
+
+Crete background
+Animation for collision of bullet and meteor
+Handle Collision of spaceship and meteors
+add special bullets
+Items that improve your amunition and health

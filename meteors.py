@@ -7,15 +7,13 @@ Nodes have two pointers. One to next and one to previous node.
 import pygame, sys
 from settings import *
 from colisions import detect_colision
-# from spacecraft import lunched_shots
+from playerstats import player_stats
+from base_obj import BaseObj
 
 
-class Meteor(object):
-    def __init__(self, x=30, y=30, wx=5, wy=5, color=(255,255,255)):
-        self.x = x
-        self.y = y
-        self.wy = wy
-        self.wx = wx
+class Meteor(BaseObj):
+    def __init__(self, x=grid_x, y=0, wx=meteor_x, wy=meteor_y,  color=(255,255,255)):
+        super().__init__(x=x, y=y, wx=wx, wy=wy)
         self.color = color
         self.display_surface = DISPLAYSURF
 
@@ -23,8 +21,11 @@ class Meteor(object):
         if 'vector' in kwargs:
             self.x += kwargs['vector'][0]
             self.y += kwargs['vector'][1]
+        ## TODO:
+        # check if meteor left the game space
+        # if yes remove object and decrease palyer points
 
-    def draw(self):
+    def draw(self, **kwargs):
         pygame.draw.rect(
             self.display_surface,
             self.color,
@@ -32,102 +33,53 @@ class Meteor(object):
         )
 
     def colision(self, **kwargs):
-        if self.color != colors['black']:
-            for i in kwargs['colision_items'].shots:
-                if detect_colision(self, i) != None:
-                    kwargs['colision_items'].remove_item(i)
-                    self.color = colors['black']
+        for i in kwargs['colision_items'].shots:
+            if detect_colision(self, i) != None:
+                player_stats.set(2, 'amunition')
+                player_stats.set(1, 'points')
+                #remove bullet from lunched_shots
+                kwargs['colision_items'].remove_item(i)
+                # remove meteor form list and delete object
+                meteors.remove_item(self)
+                del self
+                break
 
 
 class Meteors(object):
     def __init__(self):
-        self.root_node = None
-        self.last_node = None
+        self.meteors_list = []
 
-    def get_last(self):
-        return self.last_node
+    def add_to_end(self, meteor):
+        # if meteor.__class__.__name__ == 'Meteor':
+        self.meteors_list.append(meteor)
 
-    def get_root(self):
-        return self.root_node
-
-    def push(self, meteor_node):
-        if self.root_node!=None:
-            self.root_node.previous_meteor = meteor_node
-            meteor_node.next_meteor = self.root_node
-        else:
-            self.last_node = meteor_node
-        self.root_node = meteor_node
-
-    #moves each meteor one step lower.
-    def traverse(self, node=None, **kwargs):
-        if node is None:
-            node = self.root_node
-        if self.root_node is not None:
-            if 'call_function' in kwargs:
-
-                if 'call_function' in kwargs:
+    def traverse(self, **kwargs):
+        if 'call_function' in kwargs:
+            for meteor in self.meteors_list:
                     getattr(
-                        node.meteor,
+                        meteor,
                         kwargs['call_function']
                     )(**kwargs)
 
-                #update metheors position
-                # if kwargs['call_function']=='move':
-                #     getattr(node.meteor, kwargs['call_function'])(kwargs['vector'])
-
-                # handle colision
-                # if kwargs['call_function']=='colision':
-                #     colision_exists = getattr(
-                #         node.meteor,
-                #         kwargs['call_function'])(
-                #             kwargs['colision_items']
-                #         )
-                #     if colision_exists:
-                #         node.meteor.color = colors['black']
-            if node.next_meteor != None:
-                self.traverse(node=node.next_meteor, **kwargs)
-
-    def draw_meteors(self):
-        if self.root_node != None :
-            current_node = self.root_node
-            current_node.meteor.draw()
-            while current_node.next_meteor != None:
-                current_node = current_node.next_meteor
-                current_node.meteor.draw()
-
-
-class MeteorNode(object):
-    def __init__(self, meteor=None):
-        self.meteor = meteor if meteor != None else Meteor()
-        self.next_meteor = None
-        self.previous_meteor = None
+    def remove_item(self, meteor):
+        self.meteors_list.remove(meteor)
 
 
 def add_meteor_row():
-    for i in range(8):
-        add_meteor()
+    # add first in the row
+    add_meteor(x=grid_x, y=0)
+    # add rest meteors
+    root_meteor_x = meteors.meteors_list[-1].x
+    while root_meteor_x + meteor_x + grid_x <= game_area[0]:
+        add_meteor(x=root_meteor_x + meteor_x + grid_x, y=0)
+        root_meteor_x = meteors.meteors_list[-1].x
 
-
-def add_meteor():
-    if meteors.get_root() != None:
-        if meteors.get_root().meteor.x < 260:
-            meteors.push(
-                MeteorNode(
-                    Meteor(x=(meteors.get_root().meteor.x+40))
-                )
+def add_meteor(x,y):
+        meteors.add_to_end(
+            Meteor(
+                x=x
             )
-        else:
-            #new line of meteors
-            meteors.push(
-                MeteorNode(
-                    Meteor(x=30)
-                )
-            )
-    else:
-        # First Meteor added to the Meteors
-        meteors.push(MeteorNode(
-            Meteor()
-        ))
+        )
 
-
+global meteors
 meteors = Meteors()

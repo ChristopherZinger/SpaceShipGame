@@ -1,15 +1,16 @@
-import pygame, sys
+import pygame, sys, os
 
-
-
-
+BASE_DIR =  os.path.dirname(os.path.realpath(__file__))
+print(BASE_DIR)
 # Display settings
-FPS = 30
-display_proportions = (300,700)
-DISPLAYSURF = pygame.display.set_mode(display_proportions)
-
+FPS = 40
+window_size = (500,700)
+game_area = (300,700)
+DISPLAYSURF = pygame.display.set_mode(window_size)
+DISPLAYSURFALPHA = DISPLAYSURF.convert_alpha()
 #Colors
 colors = {
+    'cian': (0,255,255),
     'white': (255,255,255),
     'red': (255,0,0),
     'blue': (0,0,255),
@@ -17,3 +18,12 @@ colors = {
     'black': (0,0,0),
     'light-green': (0, 255, 119),
 }
+
+# grid
+meteor_x = 10
+meteor_y = 10
+
+grid_x = 30
+grid_y = 100
+
+meteors_in_row = int(game_area[0]/(grid_x+meteor_x))

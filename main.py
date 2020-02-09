@@ -3,21 +3,22 @@ from settings import *
 from pygame.locals import *
 from meteors import meteors, add_meteor_row
 from spacecraft import craft, lunched_shots
+from playerstats import player_stats
 
-
+print('hello')
 
 pygame.init()
+# pygame.font.init()
 fpsClock = pygame.time.Clock()
-
-loop_iterator = 0
-
 
 #Caption
 pygame.display.set_caption('pygame test')
 
+# draw first line of meteors
+add_meteor_row()
+
 #Main Loop
 while True:
-
     DISPLAYSURF.fill(colors['black'])
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -29,8 +30,11 @@ while True:
         if event.type == KEYUP:
             # handle shoot
             if event.key == pygame.K_f:
-                craft.shot()
-
+                craft.shot('normal')
+        if event.type == KEYUP:
+            # handle shoot
+            if event.key == pygame.K_SPACE:
+                craft.shot('double')
 
     # handle key down
     pressed = pygame.key.get_pressed()
@@ -43,26 +47,27 @@ while True:
     else:
         craft.handle_arrows()
 
-
-    # print([i for i in pygame.key.get_pressed() if i == 1])
     # add new row of metheors
-    if loop_iterator > 20:
-        add_meteor_row()
-        loop_iterator = 0
+    try:
+        if meteors.meteors_list[-1].y > grid_y:
+            add_meteor_row()
+    except:
+        print(meteors.meteors_list[-1].y)
 
     #draw geometries
-    meteors.draw_meteors()
+    meteors.traverse(call_function='draw',)
     lunched_shots.draw()
     craft.draw()
 
     # update position of geometries
-    meteors.traverse( None, call_function='move', vector=[0,1])
+    meteors.traverse(call_function='move', vector=[0,.5])
 
     # handle collisions
-    meteors.traverse(None, call_function='colision', colision_items=lunched_shots)
+    meteors.traverse(call_function='colision', colision_items=lunched_shots)
 
-    # Update variables
-    loop_iterator+=1
+    #draw text
+    player_stats.draw()
+
 
     # UPDATE SURFACE
     pygame.display.update()
