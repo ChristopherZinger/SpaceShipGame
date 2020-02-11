@@ -12,7 +12,7 @@ class SpaceCraft(BaseObj):
         )
         self.vector = [0,0]
         self.display_surface = DISPLAYSURF
-        self.image = pygame.image.load('spaceship.bmp')
+        self.image = pygame.image.load('maps/spaceship.bmp')
 
     def handle_arrows(self, direction=None):
         # accelerate ship movement and detect if ship

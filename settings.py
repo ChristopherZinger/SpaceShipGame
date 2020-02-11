@@ -3,8 +3,8 @@ import pygame, sys, os
 BASE_DIR =  os.path.dirname(os.path.realpath(__file__))
 print(BASE_DIR)
 # Display settings
-FPS = 40
-window_size = (500,700)
+FPS = 60
+window_size = (550,700)
 game_area = (300,700)
 DISPLAYSURF = pygame.display.set_mode(window_size)
 DISPLAYSURFALPHA = DISPLAYSURF.convert_alpha()
@@ -17,6 +17,7 @@ colors = {
     'green': (0,255,0),
     'black': (0,0,0),
     'light-green': (0, 255, 119),
+    'gray': (70,70,70),
 }
 
 # grid
