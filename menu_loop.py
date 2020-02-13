@@ -47,14 +47,16 @@ class Menu(object):
             player_stats.clear_results()
             meteors.clear_list()
             space_travel_loop()
-        if choice == self.options[1][0]:
-            pygame.quit()
-            sys.exit()
-        if choice == self.options[2][0]:
 
+        if choice == self.options[1][0]:
             pass
             # TODO:
             # create instruction page
+
+        if choice == self.options[2][0]:
+            pygame.quit()
+            sys.exit()
+
 
 def game_over_loop():
     i = 0
@@ -71,9 +73,7 @@ def game_over_loop():
 
             if event.type == KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    for option in menu.options:
-                        if option[1]=='active':
-                            return menu.choice(option[0])
+                    menu_loop()
 
         # print game over
         DISPLAYSURF.blit(

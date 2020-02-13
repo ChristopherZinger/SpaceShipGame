@@ -134,16 +134,18 @@ class ExplodedMeteorsList(object):
 
 def add_meteor_row():
     # add first in the row
-    x = randint(meteor_x*2, (meteor_x + grid_x)*3)
-    add_meteor(x, y=0)
+    margin_right = (meteor_x*1.2)
+    margin_left = 50
+    x_offset = randint(margin_left, (meteor_x + grid_x)*3)
+    add_meteor(x_offset, y=0)
     # add rest meteors
-    root_meteor_x = meteors.meteors_list[-1].x
-    next_meteor_max_x = root_meteor_x + x - (meteor_x*1.2)
-    while next_meteor_max_x  <= game_area[0]:
-        add_meteor(x=root_meteor_x + x - 25, y=0)
-        x = randint(meteor_x*2, (meteor_x + grid_x)*3)
-        root_meteor_x = meteors.meteors_list[-1].x
-        next_meteor_max_x = root_meteor_x + x - (meteor_x*1.2)
+    previous_meteor_x = meteors.meteors_list[-1].x
+    x_offset = previous_meteor_x + randint(margin_left, (meteor_x + grid_x)*3)
+    while x_offset + margin_right  <= game_area[0]:
+        add_meteor(x=x_offset, y=0)
+        previous_meteor_x = meteors.meteors_list[-1].x
+        x_offset = previous_meteor_x + randint(margin_left, (meteor_x + grid_x)*3)
+
 
 def add_meteor(x,y):
         meteors.add_to_end(
