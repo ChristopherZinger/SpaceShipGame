@@ -85,6 +85,9 @@ class Meteors(object):
     def remove_item(self, meteor):
         self.meteors_list.remove(meteor)
 
+    def clear_list(self):
+        self.meteors_list = []
+
 
 class ExplodedMeteor(BaseObj):
     def __init__(self,x,y):
@@ -128,17 +131,19 @@ class ExplodedMeteorsList(object):
     def remove_item(self, item):
         self.list.remove(item)
 
+
 def add_meteor_row():
     # add first in the row
     x = randint(meteor_x*2, (meteor_x + grid_x)*3)
     add_meteor(x, y=0)
     # add rest meteors
     root_meteor_x = meteors.meteors_list[-1].x
-    while root_meteor_x + x - 25 <= game_area[0]:
-        # grid_size = meteor_x + grid_x
-        add_meteor(x=root_meteor_x + x, y=0)
+    next_meteor_max_x = root_meteor_x + x - (meteor_x*1.2)
+    while next_meteor_max_x  <= game_area[0]:
+        add_meteor(x=root_meteor_x + x - 25, y=0)
         x = randint(meteor_x*2, (meteor_x + grid_x)*3)
         root_meteor_x = meteors.meteors_list[-1].x
+        next_meteor_max_x = root_meteor_x + x - (meteor_x*1.2)
 
 def add_meteor(x,y):
         meteors.add_to_end(
@@ -146,6 +151,7 @@ def add_meteor(x,y):
                 x=x
             )
         )
+
 
 global meteors, exploded_meteors_list
 meteors = Meteors()

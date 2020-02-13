@@ -59,7 +59,7 @@ class PlayerStats(object):
         if property != None:
             return getattr(self, property)
 
-    def clean_results(self):
+    def clear_results(self):
         self.level = 0
         self.amunition = 100
         self.health = 100

@@ -3,6 +3,7 @@ from settings import *
 from pygame.locals import *
 from playerstats import player_stats
 from space_travel_loop import space_travel_loop
+from meteors import meteors
 import pygame, sys
 from settings import *
 pygame.font.init()
@@ -43,7 +44,8 @@ class Menu(object):
 
     def choice(self,choice):
         if choice == self.options[0][0]:
-            player_stats.clean_results()
+            player_stats.clear_results()
+            meteors.clear_list()
             space_travel_loop()
         if choice == self.options[1][0]:
             pygame.quit()
