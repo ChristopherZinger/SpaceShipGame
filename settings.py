@@ -2,8 +2,10 @@ import pygame, sys, os
 
 BASE_DIR =  os.path.dirname(os.path.realpath(__file__))
 print(BASE_DIR)
+
 # Display settings
 FPS = 60
+
 window_size = (550,700)
 game_area = (300,700)
 DISPLAYSURF = pygame.display.set_mode(window_size)
@@ -27,4 +29,5 @@ meteor_y = 10
 grid_x = 30
 grid_y = 100
 
+fpsClock = pygame.time.Clock()
 meteors_in_row = int(game_area[0]/(grid_x+meteor_x))

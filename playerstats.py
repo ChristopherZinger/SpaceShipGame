@@ -3,6 +3,7 @@ from settings import *
 pygame.font.init()
 
 
+
 class PlayerStats(object):
     def __init__(self):
         self.level = 0
@@ -57,6 +58,12 @@ class PlayerStats(object):
     def get(self, property):
         if property != None:
             return getattr(self, property)
+
+    def clean_results(self):
+        self.level = 0
+        self.amunition = 100
+        self.health = 100
+        self.points = 0
 
 
 player_stats = PlayerStats()
