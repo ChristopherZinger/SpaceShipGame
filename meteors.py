@@ -1,8 +1,4 @@
 
-'''
-Meteors are stored as a linked list with root and last node.
-Nodes have two pointers. One to next and one to previous node.
-'''
 # python modules
 import pygame, sys
 from random import randint, choice

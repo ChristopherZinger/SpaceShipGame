@@ -1,10 +1,11 @@
 import pygame, sys
 from settings import *
 from pygame.locals import *
+from random import randint
 from meteors import meteors, add_meteor_row, exploded_meteors_list
 from spacecraft import craft, lunched_shots
 from playerstats import player_stats
-
+from stars import stars, add_star_row
 
 def space_travel_loop():
     print('Space Travel Starts!')
@@ -15,6 +16,7 @@ def space_travel_loop():
 
     # draw first line of meteors
     add_meteor_row()
+    add_star_row()
 
     #Main Loop
     while True:
@@ -53,9 +55,14 @@ def space_travel_loop():
             if meteors.meteors_list[-1].y > grid_y:
                 add_meteor_row()
         except:
-            print(meteors.meteors_list[-1].y)
+            pass
+
+        # add background start row
+        if randint(1,10) < 7 :
+            add_star_row(3)
 
         #draw geometries
+        stars.draw()
         exploded_meteors_list.draw() # maybe change to traverse later on ??
         meteors.traverse(call_function='draw',)
         lunched_shots.draw()
