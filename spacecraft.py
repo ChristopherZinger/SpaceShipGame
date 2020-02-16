@@ -2,7 +2,8 @@ import pygame, sys
 from settings import *
 from playerstats import player_stats
 from base_obj import BaseObj
-
+from random import choice
+from colisions import left_game_area
 
 class SpaceCraft(BaseObj):
     def __init__(self,game_area, color):
@@ -51,6 +52,66 @@ class SpaceCraft(BaseObj):
                 lunched_shots.push(CraftShot(self.x, self.y))
                 lunched_shots.push(CraftShot(self.x+self.wx-2, self.y))
 
+    def explode(self):
+        #lunch exploded meteor Animation
+        for i in range(100):
+            craft_pieces.add(
+                CraftPiece(self.x,self.y)
+            )
+
+
+class CraftPiece(BaseObj):
+    def __init__(self, x, y,):
+        size = choice([ i for i in range(5) ])
+        super().__init__(x=x,y=y, wx=size, wy=size)
+        self.display_surface = DISPLAYSURF
+        self.color = [255,255,255]
+        #generate vector
+        vector_choice = [i for i in range(-8,8)]
+        vector_choice.remove(0)
+        self.vector = [choice(
+            vector_choice
+        ) for i in range(2)]
+
+    def move(self):
+        #update color
+        self.color[2] = self.color[2]-15 if self.color[2] >= 15 else 0
+        if self.color[2] == 0 and self.color[1]-15 >= 0:
+            self.color[1] -= 15
+            if self.color[1] > 15 and self.color[0] > 5:
+                self.color[0] -= 5
+
+        # update positon
+        self.x += self.vector[0]
+        self.y += self.vector[1]
+        if left_game_area(self):
+            craft_pieces.remove_item(self)
+            del self
+
+    def draw(self):
+        pygame.draw.rect(
+            self.display_surface,
+            self.color,
+            (self.x, self.y, self.wx, self.wy)
+        )
+        self.move()
+
+
+class CraftPieces(object):
+    def __init__(self):
+        self.list = []
+
+    def add(self,item):
+        self.list.append(item)
+
+    def draw(self):
+        if len(self.list) > 0:
+            for i in self.list:
+                i.draw()
+
+    def remove_item(self, item):
+        self.list.remove(item)
+
 
 class CraftShot(BaseObj):
     def __init__(self, x, y, type='normal'):
@@ -90,5 +151,6 @@ class LunchedShots():
 
 
 global lunched_shots
+craft_pieces = CraftPieces()
 craft = SpaceCraft(game_area, colors['light-green'])
 lunched_shots = LunchedShots()

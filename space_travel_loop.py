@@ -3,7 +3,7 @@ from settings import *
 from pygame.locals import *
 from random import randint
 from meteors import meteors, add_meteor_row, exploded_meteors_list
-from spacecraft import craft, lunched_shots
+from spacecraft import craft, lunched_shots, craft_pieces
 from playerstats import player_stats
 from stars import stars, add_star_row
 
@@ -64,6 +64,7 @@ def space_travel_loop():
         #draw geometries
         stars.draw()
         exploded_meteors_list.draw() # maybe change to traverse later on ??
+
         meteors.traverse(call_function='draw',)
         lunched_shots.draw()
         craft.draw()

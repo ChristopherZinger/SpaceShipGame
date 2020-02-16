@@ -3,12 +3,14 @@ from settings import *
 from pygame.locals import *
 from playerstats import player_stats
 from space_travel_loop import space_travel_loop
-from meteors import meteors
+from meteors import meteors, exploded_meteors_list
 import pygame, sys
 from settings import *
+from spacecraft import craft, craft_pieces, lunched_shots
+from random import randint
+from stars import stars, add_star_row
+
 pygame.font.init()
-
-
 
 class Menu(object):
     def __init__(self):
@@ -58,7 +60,47 @@ class Menu(object):
             sys.exit()
 
 
+def game_over_animation_loop():
+    #variables
+    meteor_vector = [0,1]
+
+    craft.explode()
+
+    #Main Loop
+    for i in range(120):
+        DISPLAYSURF.fill(colors['black'])
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # add background start row
+        if randint(1,10) < 7 :
+            add_star_row(3)
+
+        #draw geometries
+        stars.draw()
+        exploded_meteors_list.draw() # maybe change to traverse later on ??
+        meteors.traverse(call_function='draw',)
+        lunched_shots.draw()
+        craft_pieces.draw()
+
+        # update position of geometries
+        meteors.traverse(call_function='move', vector=meteor_vector)
+
+        # handle collisions
+        meteors.traverse(call_function='colision', colision_items=lunched_shots)
+
+        #draw text
+        player_stats.draw()
+
+        # UPDATE SURFACE
+        pygame.display.update()
+        fpsClock.tick(FPS) # control speed or FPS
+
+
 def game_over_loop():
+    game_over_animation_loop()
     i = 0
     while True:
         i+=1
