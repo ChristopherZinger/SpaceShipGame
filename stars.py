@@ -3,9 +3,10 @@ import pygame, sys
 from random import randint, choice
 
 #local imports
-from base_obj import BaseObj
+from base_obj import BaseObj, ListOfObjects
 from settings import *
 from colisions import left_game_area
+
 
 class Star(BaseObj):
     def __init__(self):
@@ -32,7 +33,7 @@ class Star(BaseObj):
             stars.remove_item(self)
             del self
 
-    def draw(self):
+    def draw(self, **kwargs):
         self.move()
         pygame.draw.rect(
             self.display_surface,
@@ -41,33 +42,11 @@ class Star(BaseObj):
         )
 
 
-class Stars(object):
-    def __init__(self):
-        self.stars_list = []
-
-    def add_to_end(self, star):
-        self.stars_list.append(star)
-
-    def remove_item(self, star):
-        self.stars_list.remove(star)
-
-    def clear_list(self):
-        self.stars_list = []
-
-    def draw(self):
-        for star in self.stars_list:
-            star.draw()
-
-
 def add_star_row(quantity=10):
     # add first in the row
     for i in range(randint(1,quantity)):
-        add_star()
-
-
-def add_star():
-        stars.add_to_end(Star())
+        stars.add(Star())
 
 
 global stars
-stars = Stars()
+stars = ListOfObjects()

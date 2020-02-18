@@ -1,7 +1,7 @@
 import pygame, sys
 from settings import *
 from playerstats import player_stats
-from base_obj import BaseObj
+from base_obj import BaseObj, ListOfObjects
 from random import choice
 from colisions import left_game_area
 
@@ -46,11 +46,11 @@ class SpaceCraft(BaseObj):
         if player_stats.get('amunition') <= 0: return
         if type == 'normal':
                 player_stats.set(-1, 'amunition')
-                lunched_shots.push(CraftShot(self.x+int(self.wx/2), self.y))
+                lunched_shots.add(CraftShot(self.x+int(self.wx/2), self.y))
         if type == 'double':
                 player_stats.set(-2, 'amunition')
-                lunched_shots.push(CraftShot(self.x, self.y))
-                lunched_shots.push(CraftShot(self.x+self.wx-2, self.y))
+                lunched_shots.add(CraftShot(self.x, self.y))
+                lunched_shots.add(CraftShot(self.x+self.wx-2, self.y))
 
     def explode(self):
         #lunch exploded meteor Animation
@@ -88,7 +88,7 @@ class CraftPiece(BaseObj):
             craft_pieces.remove_item(self)
             del self
 
-    def draw(self):
+    def draw(self,**kwargs):
         pygame.draw.rect(
             self.display_surface,
             self.color,
@@ -97,20 +97,20 @@ class CraftPiece(BaseObj):
         self.move()
 
 
-class CraftPieces(object):
-    def __init__(self):
-        self.list = []
-
-    def add(self,item):
-        self.list.append(item)
-
-    def draw(self):
-        if len(self.list) > 0:
-            for i in self.list:
-                i.draw()
-
-    def remove_item(self, item):
-        self.list.remove(item)
+# class CraftPieces(object):
+#     def __init__(self):
+#         self.list = []
+#
+#     def add(self,item):
+#         self.list.append(item)
+#
+#     def draw(self, **kwargs):
+#         if len(self.list) > 0:
+#             for i in self.list:
+#                 i.draw()
+#
+#     def remove_item(self, item):
+#         self.list.remove(item)
 
 
 class CraftShot(BaseObj):
@@ -120,7 +120,7 @@ class CraftShot(BaseObj):
         self.display_surface = DISPLAYSURF
         self.shot_type = type
 
-    def draw(self):
+    def draw(self, **kwargs):
         #draw a bullet that looks like a short gradient
         for i in range(10):
             color = (0, (255-(i*25)), (255-(i*25)))
@@ -133,24 +133,7 @@ class CraftShot(BaseObj):
             lunched_shots.remove_item(self)
 
 
-class LunchedShots():
-    def __init__(self):
-        self.shots = []
-
-    def push(self, shot):
-        self.shots.append(shot)
-
-    def remove_item(self,item):
-        self.shots.remove(item)
-        del item
-
-    def draw(self):
-        if len(self.shots) > 0:
-            for i in self.shots:
-                i.draw()
-
-
 global lunched_shots
-craft_pieces = CraftPieces()
+craft_pieces = ListOfObjects()
 craft = SpaceCraft(game_area, colors['light-green'])
-lunched_shots = LunchedShots()
+lunched_shots = ListOfObjects()

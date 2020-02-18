@@ -52,7 +52,7 @@ def space_travel_loop():
 
         # add new row of metheors
         try:
-            if meteors.meteors_list[-1].y > grid_y:
+            if meteors.list[-1].y > grid_y:
                 add_meteor_row()
         except:
             pass
@@ -62,11 +62,10 @@ def space_travel_loop():
             add_star_row(3)
 
         #draw geometries
-        stars.draw()
-        exploded_meteors_list.draw() # maybe change to traverse later on ??
-
+        stars.traverse(call_function = 'draw')
+        exploded_meteors_list.traverse(call_function='draw')
         meteors.traverse(call_function='draw',)
-        lunched_shots.draw()
+        lunched_shots.traverse(call_function='draw')
         craft.draw()
 
         # update position of geometries

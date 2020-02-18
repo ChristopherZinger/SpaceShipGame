@@ -79,11 +79,11 @@ def game_over_animation_loop():
             add_star_row(3)
 
         #draw geometries
-        stars.draw()
-        exploded_meteors_list.draw() # maybe change to traverse later on ??
+        stars.traverse(call_function='draw')
+        exploded_meteors_list.traverse(call_function='draw')
         meteors.traverse(call_function='draw',)
-        lunched_shots.draw()
-        craft_pieces.draw()
+        lunched_shots.traverse(call_function='draw')
+        craft_pieces.traverse(call_function='draw')
 
         # update position of geometries
         meteors.traverse(call_function='move', vector=meteor_vector)

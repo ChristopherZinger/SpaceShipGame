@@ -6,7 +6,7 @@ import time
 
 #local imports
 from colisions import detect_colision, left_game_area
-from base_obj import BaseObj
+from base_obj import BaseObj, ListOfObjects
 from playerstats import player_stats
 from settings import *
 from spacecraft import craft
@@ -51,7 +51,7 @@ class Meteor(BaseObj):
             self.destruct()
             return
         # check for colision with shots
-        for i in kwargs['colision_items'].shots:
+        for i in kwargs['colision_items'].list:
             if detect_colision(self, i) != None:
                 player_stats.set(2, 'amunition')
                 player_stats.set(1, 'points')
@@ -59,30 +59,6 @@ class Meteor(BaseObj):
                 kwargs['colision_items'].remove_item(i)
                 self.destruct()
                 return
-
-
-
-class Meteors(object):
-    def __init__(self):
-        self.meteors_list = []
-
-    def add_to_end(self, meteor):
-        # if meteor.__class__.__name__ == 'Meteor':
-        self.meteors_list.append(meteor)
-
-    def traverse(self, **kwargs):
-        if 'call_function' in kwargs:
-            for meteor in self.meteors_list:
-                    getattr(
-                        meteor,
-                        kwargs['call_function']
-                    )(**kwargs)
-
-    def remove_item(self, meteor):
-        self.meteors_list.remove(meteor)
-
-    def clear_list(self):
-        self.meteors_list = []
 
 
 class ExplodedMeteor(BaseObj):
@@ -104,28 +80,13 @@ class ExplodedMeteor(BaseObj):
             exploded_meteors_list.remove_item(self)
             del self
 
-    def draw(self):
+    def draw(self, **kwargs):
         pygame.draw.rect(
             self.display_surface,
             (255,255,255),
             (self.x, self.y, self.wx, self.wy)
         )
         self.move()
-
-
-class ExplodedMeteorsList(object):
-    def __init__(self):
-        self.list = []
-
-    def add(self,item):
-        self.list.append(item)
-
-    def draw(self):
-        if len(self.list) > 0:
-            for i in self.list:
-                i.draw()
-    def remove_item(self, item):
-        self.list.remove(item)
 
 
 def add_meteor_row():
@@ -135,16 +96,16 @@ def add_meteor_row():
     x_offset = randint(margin_left, (meteor_x + grid_x)*3)
     add_meteor(x_offset, y=0)
     # add rest meteors
-    previous_meteor_x = meteors.meteors_list[-1].x
+    previous_meteor_x = meteors.list[-1].x
     x_offset = previous_meteor_x + randint(margin_left, (meteor_x + grid_x)*3)
     while x_offset + margin_right  <= game_area[0]:
         add_meteor(x=x_offset, y=0)
-        previous_meteor_x = meteors.meteors_list[-1].x
+        previous_meteor_x = meteors.list[-1].x
         x_offset = previous_meteor_x + randint(margin_left, (meteor_x + grid_x)*3)
 
 
 def add_meteor(x,y):
-        meteors.add_to_end(
+        meteors.add(
             Meteor(
                 x=x
             )
@@ -152,5 +113,5 @@ def add_meteor(x,y):
 
 
 global meteors, exploded_meteors_list
-meteors = Meteors()
-exploded_meteors_list = ExplodedMeteorsList()
+meteors = ListOfObjects()
+exploded_meteors_list = ListOfObjects()
